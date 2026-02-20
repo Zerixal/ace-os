@@ -11,7 +11,7 @@ packages=(
   @kde-desktop-environment
 )
 
-dnf5 -y install "${packages[@]}"
+dnf5 -y install "${packages[@]}" --allowerasing
 
 
 dnf5 groupinstall "KDE Plasma Workspaces"
