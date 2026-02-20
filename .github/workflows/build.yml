@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - main
+      - dev
     paths-ignore:
       - '**/README.md'
   workflow_dispatch:
@@ -16,7 +17,7 @@ on:
 env:
   IMAGE_NAME: "${{ github.event.repository.name }}"
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"
-  DEFAULT_TAG: "${{ github.ref_name == 'main' && 'stable' || github.ref_name == 'testing' && 'testing' || 'stable' }}"
+  DEFAULT_TAG: "dev" 
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.brand_name}}-${{ inputs.stream_name }}
@@ -45,10 +46,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Maximize build space
-        uses: ublue-os/remove-unwanted-software@v9
-        with:
-          remove-codeql: true
+      # - name: Maximize build space
+      #   uses: ublue-os/remove-unwanted-software@v8
+      #   with:
+      #     remove-codeql: true
           
       - name: Mount BTRFS for podman storage
         id: container-storage-action
