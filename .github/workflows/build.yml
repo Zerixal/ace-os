@@ -115,7 +115,7 @@ jobs:
           sudo skopeo copy "${RECHUNK_REF}" "docker-archive:image.tar"
 
       - name: Upload image artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: image-tar
           path: image.tar
@@ -142,7 +142,7 @@ jobs:
           echo "IMAGE_NAME=${IMAGE_NAME,,}" >> ${GITHUB_ENV}
 
       - name: Download image artifact
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: image-tar
           path: .
