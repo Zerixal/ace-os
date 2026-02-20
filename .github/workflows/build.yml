@@ -46,10 +46,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Maximize build space
-        uses: ublue-os/remove-unwanted-software@v8
-        with:
-          remove-codeql: true
+      # - name: Maximize build space
+      #   uses: ublue-os/remove-unwanted-software@v8
+      #   with:
+      #     remove-codeql: true
           
       - name: Mount BTRFS for podman storage
         id: container-storage-action
