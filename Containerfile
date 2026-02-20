@@ -11,13 +11,6 @@ COPY build_files /
 FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 ARG DEFAULT_TAG=${DEFAULT_TAG}
 
-RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache \
-    --mount=type=cache,dst=/var/log \
-    --mount=type=tmpfs,dst=/tmp \
-    /ctx/build.sh && \
-    /ctx/cleanup.sh
-
 # 00-base
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
