@@ -12,6 +12,3 @@ packages=(
 )
 
 dnf5 -y install "${packages[@]}" --allowerasing
-
-
-dnf5 groupinstall "KDE Plasma Workspaces"
