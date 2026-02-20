@@ -27,21 +27,19 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     /ctx/01-kernel.sh
 
 
-# # 02-base
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/02-base.sh && \
-#     /ctx/cleanup.sh
+# 02-foundation
+RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/tmp \
+    /ctx/02-foundation.sh
 
-# # 03-de
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/03-de.sh && \
-#     /ctx/cleanup.sh
+# 03-de
+RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/tmp \
+    /ctx/03-de.sh
 
 # 04-patch
 # RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
