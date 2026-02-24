@@ -11,56 +11,9 @@ COPY build_files /
 FROM quay.io/fedora/fedora-bootc:${FEDORA_VERSION} as base
 ARG DEFAULT_TAG=${DEFAULT_TAG}
 
-# 00-base
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=tmpfs,dst=/var \
     --mount=type=tmpfs,dst=/tmp \
     /ctx/build.sh
-
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/04-patch.sh && \
-#     /ctx/cleanup.sh
-
-# # 05-Dank
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/05-dank.sh && \
-#     /ctx/cleanup.sh
-
-# # 06-config
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/06-config.sh && \
-#     /ctx/cleanup.sh
-
-# # 07-services
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/07-services.sh && \
-#     /ctx/cleanup.sh
-
-# # 08-initramfs
-# RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-#     --mount=type=cache,dst=/var/cache \
-#     --mount=type=cache,dst=/var/log \
-#     --mount=type=tmpfs,dst=/tmp \
-#     /ctx/08-initramfs.sh && \
-#     /ctx/cleanup.sh
-
-# 99-final
-RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache \
-    --mount=type=cache,dst=/var/log \
-    --mount=type=tmpfs,dst=/tmp \
-    /ctx/99-final.sh
 
 RUN bootc container lint
