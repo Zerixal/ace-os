@@ -113,4 +113,3 @@ systemctl disable --now power-profiles-daemon
 systemctl mask --now power-profiles-daemon
 
 systemctl enable --now tlp
-systemctl start tlp
