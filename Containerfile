@@ -13,35 +13,10 @@ ARG DEFAULT_TAG=${DEFAULT_TAG}
 
 # 00-base
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache \
-    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/var \
     --mount=type=tmpfs,dst=/tmp \
-    /ctx/00-base.sh
+    /ctx/build.sh
 
-# 01-kernel
-RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache \
-    --mount=type=cache,dst=/var/log \
-    --mount=type=tmpfs,dst=/tmp \
-    --mount=type=bind,from=kernel,src=/,dst=/rpms/kernel \
-    /ctx/01-kernel.sh
-
-
-# 02-foundation
-RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache \
-    --mount=type=cache,dst=/var/log \
-    --mount=type=tmpfs,dst=/tmp \
-    /ctx/02-foundation.sh
-
-# 03-de
-RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-    --mount=type=cache,dst=/var/cache \
-    --mount=type=cache,dst=/var/log \
-    --mount=type=tmpfs,dst=/tmp \
-    /ctx/03-de.sh
-
-# 04-patch
 # RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
 #     --mount=type=cache,dst=/var/cache \
 #     --mount=type=cache,dst=/var/log \
