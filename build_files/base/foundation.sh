@@ -103,7 +103,13 @@ packages=(
 
   plymouth
   plymouth-system-theme
+
+  tlp
 )
 
 dnf5 -y install "${packages[@]}" --exclude=scx-tools-nightly --exclude=scx-scheds-nightly
 
+systemctl disable --now power-profiles-daemon
+systemctl mask --now power-profiles-daemon
+
+systemctl enable --now tlp
