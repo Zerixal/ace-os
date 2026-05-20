@@ -13,8 +13,8 @@ chmod +x  05-rpmostree.install 50-dracut.install
 popd
 
 packages=(
-  kernel-cachyos-lto
-  kernel-cachyos-lto-devel-matched
+  kernel-cachyos
+  kernel-cachyos-devel-matched
 )
 
 for pkg in kernel kernel-core kernel-modules kernel-modules-core; do

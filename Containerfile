@@ -4,7 +4,6 @@ ARG ARCH=x86_64
 ARG OS_NAME=ace-os
 ARG DEFAULT_TAG=latest
 
-FROM ghcr.io/bazzite-org/kernel-bazzite:6.17.7-ba19-f43-x86_64 AS kernel
 FROM scratch AS ctx
 COPY build_files /
 
@@ -23,7 +22,6 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \
     --mount=type=tmpfs,dst=/tmp \
-    --mount=type=bind,from=kernel,src=/,dst=/rpms/kernel \
     /ctx/01-kernel.sh
 
 
