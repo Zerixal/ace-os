@@ -78,7 +78,7 @@ jobs:
           image: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}
           chown: ${{ env.USER_UID }}:${{ env.USER_GID }}
           types: anaconda-iso
-          additional-args: --use-librepo=True --rootfs=btrfs
+          additional-args: --use-librepo=True --rootfs=btrfs --distro=fedora-43
 
       - name: Upload disk image and Checksum to Job Artifacts
         if: inputs.upload-to-s3 != true && github.event_name != 'pull_request'
