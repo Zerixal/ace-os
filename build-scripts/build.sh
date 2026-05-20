@@ -10,7 +10,7 @@ modules=(
   "base.kernel"
   "base.packages"
   "hardware.display"
-  "hardware.printing"
+  # "hardware.printing"
   "de.kde.packages"
   "base.system"
 )
