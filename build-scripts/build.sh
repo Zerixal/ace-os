@@ -9,6 +9,8 @@ modules=(
   "base.dnf"
   "base.kernel"
   "base.packages"
+  "hardware.display"
+  "hardware.printing"
   "de.kde.packages"
   "base.system"
 )
