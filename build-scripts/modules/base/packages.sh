@@ -1,15 +1,8 @@
-#!/bin/bash
-
-echo "::group:: ===$(basename "$0")==="
-
 set -ouex pipefail
 
 shopt -s nullglob
 
-
-
 packages=(
-
   @networkmanager-submodules
   NetworkManager-wifi
   iwlegacy-firmware
@@ -20,7 +13,7 @@ packages=(
   alsa-sof-firmware
   alsa-tools-firmware
 
-    audit
+  audit
   audispd-plugins
   cifs-utils
   firewalld
@@ -38,7 +31,7 @@ packages=(
   xdg-terminal-exec
   xdg-user-dirs-gtk
 
-    gvfs-mtp
+  gvfs-mtp
   gvfs-smb
   ifuse
   jmtpfs
@@ -106,4 +99,3 @@ packages=(
 )
 
 dnf5 -y install "${packages[@]}" --exclude=scx-tools-nightly --exclude=scx-scheds-nightly
-
