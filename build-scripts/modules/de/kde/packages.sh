@@ -4,6 +4,7 @@ shopt -s nullglob
 
 packages=(
   @kde-desktop-environment
+  sddm
 )
 
 dnf5 -y install "${packages[@]}" --allowerasing
@@ -13,5 +14,9 @@ cat > /usr/lib/systemd/system-preset/80-ace-kde.preset <<'EOF'
 enable sddm.service
 EOF
 
-systemctl enable sddm.service
+if [ -f /usr/lib/systemd/system/sddm.service ] || [ -f /etc/systemd/system/sddm.service ]; then
+  systemctl enable sddm.service
+else
+  echo "sddm.service not found; skipping enable"
+fi
 systemctl set-default graphical.target
