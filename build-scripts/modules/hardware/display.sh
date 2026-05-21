@@ -10,7 +10,6 @@ packages=(
   libva-utils
   mesa-dri-drivers
   mesa-va-drivers
-  mesa-vdpau-drivers
   switcheroo-control
   vulkan-loader
   vulkan-tools
