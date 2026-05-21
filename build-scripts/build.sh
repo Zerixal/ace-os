@@ -22,6 +22,11 @@ for mod in "${modules[@]}"; do
   echo "::endgroup::"
 done
 
+# bootc lint rejects /usr/etc in container images
+if [ -d /usr/etc ]; then
+  rm -rf /usr/etc
+fi
+
 find /etc/yum.repos.d/ -maxdepth 1 -type f -name '*.repo' ! -name 'fedora.repo' ! -name 'fedora-updates.repo' ! -name 'fedora-updates-testing.repo' -exec rm -f {} +
 rm -rf /tmp/* || true
 dnf5 clean all
