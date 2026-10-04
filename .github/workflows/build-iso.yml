@@ -18,8 +18,10 @@ on:
   pull_request:
     branches:
       - main
+    # The ISO is a thin installer: the kickstart does `bootc switch` at install
+    # time, so the ISO does not embed the OS image and does not need rebuilding
+    # when the image changes. Only the installer config itself matters here.
     paths:
-      - './disk_config/disk.toml'
       - './disk_config/iso.toml'
       - './.github/workflows/build-iso.yml'
 
@@ -36,7 +38,10 @@ concurrency:
 jobs:
   build:
     name: Build disk image (anaconda-iso)
-    runs-on: ${{ inputs.platform == 'amd64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
+    # Test for arm64 rather than amd64: `inputs` is empty on pull_request, and an
+    # empty != 'amd64' comparison falls through to the arm64 runner, which built
+    # every PR ISO for the wrong architecture.
+    runs-on: ${{ inputs.platform == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     permissions:
       contents: read
       packages: read
@@ -69,9 +74,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
 
+      # Deprecated upstream in favour of osbuild/image-builder-action, which
+      # dropped TOML/kickstart support -- keep pinned until that is resolved.
       - name: Build disk image
         id: build
-        uses: osbuild/bootc-image-builder-action@main
+        uses: osbuild/bootc-image-builder-action@028e4d28330efe546229eb9cb52aee78174d2347 # main
         with:
           builder-image: ${{ env.BIB_IMAGE }}
           config-file: ./disk_config/iso.toml

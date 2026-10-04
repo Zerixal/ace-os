@@ -15,8 +15,6 @@ s|^ID_LIKE=.*|ID_LIKE=\"fedora\"|
 s|^VERSION=.*|VERSION=\"${RELEASE}.${DATE}\"|
 s|^VERSION_ID=.*|VERSION_ID=\"${RELEASE}\"|
 s|^PRETTY_NAME=.*|PRETTY_NAME=\"Ace ${RELEASE}.${DATE}\"|
-s|^VARIANT=.*|VARIANT=\"Ace\"|
-s|^VARIANT_ID=.*|VARIANT_ID=\"ace\"|
 s|^LOGO=.*|LOGO=\"cachyos\"|
 s|^HOME_URL=.*|HOME_URL=\"https://github.com/aceday/ace-os\"|
 s|^BUG_REPORT_URL=.*|BUG_REPORT_URL=\"https://github.com/aceday/ace-os/issues\"|
@@ -33,3 +31,9 @@ EOF
 
 # /etc/os-release is a symlink to ../usr/lib/os-release, so the tooling copy of
 # these fields is the same inode and needs no syncing.
+
+# VARIANT/VARIANT_ID are deliberately left unset. osbuild derives the distro name
+# for its manifest definitions from VARIANT_ID when present, so branding the
+# image VARIANT_ID=ace made BIB look for a nonexistent "ace-44" definition and
+# fail with `could not find def file for distro ace-44`. NAME, PRETTY_NAME,
+# CPE_NAME and DEFAULT_HOSTNAME still carry the Ace identity.
