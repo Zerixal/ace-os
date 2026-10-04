@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -ouex pipefail
 
 shopt -s nullglob
