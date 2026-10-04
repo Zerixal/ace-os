@@ -1,0 +1,4 @@
+# CH340/CH341 USB-serial adapters (Arduino clones, USB-UART cables, etc).
+# Without this the device node is root-only, so dialout-group users cannot
+# open the port without a udev restart.
+SUBSYSTEM=="usb", ATTR{idVendor}=="1a86", ATTR{idProduct}=="5512", MODE="0666"
