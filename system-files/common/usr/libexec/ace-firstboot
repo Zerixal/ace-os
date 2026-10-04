@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+#
+# Ace first-boot setup -- the temporary layer.
+#
+# Creates the primary account, then makes itself permanently inert. It is only
+# removed from service on SUCCESS: on any failure the marker is not written, so
+# systemd retries at the next boot instead of leaving a half-configured machine.
+#
+# The files themselves stay in the read-only deployment (/usr is immutable on a
+# bootc system, so it cannot delete its own script). "Removed" therefore means:
+# the guard marker exists, the unit is disabled, and every later boot skips it.
+
+set -ou pipefail
+
+MARKER=/var/lib/ace-firstboot.done
+LOG_TAG="ace-firstboot"
+
+log() { logger -t "$LOG_TAG" -- "$*" || true; }
+die() { log "ERROR: $*"; exit 1; }
+
+[ -e "$MARKER" ] && exit 0
+
+if [ ! -t 0 ] || [ ! -t 1 ]; then
+  log "No interactive console available; skipping setup for now."
+  log "Run 'systemctl restart ace-firstboot' from a TTY, or create an account manually."
+  exit 0
+fi
+
+echo "Welcome to Ace. This runs once."
+echo
+
+# --- username -------------------------------------------------------------
+while true; do
+  read -rp "Username: " username
+  # Keep it to what useradd and sudo will accept; avoids a shell-injection
+  # surface in the sudoers/authorized_keys lines written further down.
+  if [[ "$username" =~ ^[a-z_][a-z0-9_-]{0,31}$ ]]; then
+    break
+  fi
+  echo "  Must start with a lowercase letter or underscore, then up to 31 chars of a-z 0-9 _ -"
+done
+
+# --- password -------------------------------------------------------------
+# Read twice with echo off. Never passed as an argument, so it stays out of
+# /proc/<pid>/cmdline and the journal.
+while true; do
+  read -rsp "Password: " pw1; echo
+  [ -n "$pw1" ] || { echo "  Cannot be empty."; continue; }
+  read -rsp "Confirm password: " pw2; echo
+  [ "$pw1" = "$pw2" ] && break
+  echo "  Passwords did not match."
+done
+
+# --- timezone (optional, keeps current if left blank) ---------------------
+read -rp "Timezone (e.g. Europe/Berlin, blank to keep current): " tz
+if [ -n "$tz" ] && timedatectl set-timezone "$tz" 2>/dev/null; then
+  log "timezone set to $tz"
+fi
+
+# --- account --------------------------------------------------------------
+if id -u "$username" >/dev/null 2>&1; then
+  log "user $username already exists; resetting its password"
+else
+  useradd --create-home --shell /bin/bash --comment "Ace user" "$username" \
+    || die "useradd failed for $username"
+fi
+
+printf '%s:%s\n' "$username" "$pw1" | chpasswd || die "chpasswd failed"
+unset pw1 pw2
+
+usermod -aG wheel "$username" || die "failed to add $username to wheel"
+
+# wheel is usually already sudo-enabled via /etc/sudoers, but the image ships no
+# sudoers.d drop-in, so make it explicit and idempotent.
+mkdir -p /etc/sudoers.d
+printf 'Defaults:%s !requiretty\n' "$username" > "/etc/sudoers.d/10-ace-$username"
+printf '%s ALL=(ALL:ALL) ALL\n' "$username" >> "/etc/sudoers.d/10-ace-$username"
+chmod 0440 "/etc/sudoers.d/10-ace-$username"
+visudo -cf "/etc/sudoers.d/10-ace-$username" >/dev/null || {
+  rm -f "/etc/sudoers.d/10-ace-$username"
+  die "generated sudoers file failed visudo check; removed"
+}
+
+# --- greeter: straight into Plasma on Wayland ------------------------------
+# Session=plasma.desktop is the Wayland entry; plasma-x11.desktop is the X11 one
+# SDDM would otherwise be free to pick.
+mkdir -p /etc/sddm.conf.d
+cat > /etc/sddm.conf.d/10-ace-autologin.conf <<EOF
+[Autologin]
+User=$username
+Session=plasma.desktop
+Relogin=false
+EOF
+
+# --- done: only now does the layer stand down ------------------------------
+mkdir -p "$(dirname "$MARKER")"
+: > "$MARKER"
+chmod 0644 "$MARKER"
+
+systemctl disable ace-firstboot.service >/dev/null 2>&1 || true
+
+log "first-boot setup complete for $username; layer disabled"
+echo
+echo "Setup complete. Starting your desktop..."
+exit 0

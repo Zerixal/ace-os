@@ -1,0 +1,21 @@
+[Unit]
+Description=Ace first-boot setup
+Documentation=file:///usr/libexec/ace-firstboot
+# Ordered before the greeter so the account exists by the time SDDM starts.
+Before=display-manager.service
+After=systemd-user-sessions.service local-fs.target
+# The guard: once the marker exists this unit is inert, so it cannot run twice.
+# /var is writable and persists at runtime but does not exist at image build time,
+# so this condition is true on the first boot and false forever after.
+ConditionPathExists=!/var/lib/ace-firstboot.done
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/libexec/ace-firstboot
+StandardInput=tty
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

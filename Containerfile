@@ -44,6 +44,18 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=tmpfs,dst=/var --mount=type=tmpfs,dst=/tmp \
     /ctx/modules/hardware/display.sh
 
+# ThinkPad X390: bluetooth, fwupd, Thunderbolt docks, NVMe/Opal, battery care.
+# Depends on display.sh (firmware, mesa, va drivers).
+RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=tmpfs,dst=/var --mount=type=tmpfs,dst=/tmp \
+    /ctx/modules/hardware/thinkpad.sh
+
+# CPU frequency / turbo policy via TLP. Masks power-profiles-daemon, so this must
+# come after thinkpad.sh which enables it.
+RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=tmpfs,dst=/var --mount=type=tmpfs,dst=/tmp \
+    /ctx/modules/hardware/power.sh
+
 # Printing pulls in a large driver set; enable it once the image is otherwise
 # settled and the layer cost is acceptable.
 # RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
