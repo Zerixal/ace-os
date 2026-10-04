@@ -31,5 +31,5 @@ s|^DEFAULT_HOSTNAME=.*|DEFAULT_HOSTNAME="ace"|
 /^REDHAT_SUPPORT_PRODUCT_VERSION=/d
 EOF
 
-# Ensure /etc/os-release matches /usr/lib/os-release for tooling
-cp -f /usr/lib/os-release /etc/os-release
+# /etc/os-release is a symlink to ../usr/lib/os-release, so the tooling copy of
+# these fields is the same inode and needs no syncing.
