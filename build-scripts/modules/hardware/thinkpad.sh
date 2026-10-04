@@ -39,7 +39,7 @@ packages=(
 
 dnf5 -y install "${packages[@]}"
 
-for svc in bluetooth.service fwupd.service power-profiles-daemon.service; do
+for svc in bluetooth.service fwupd.service; do
   if systemctl list-unit-files "${svc}" >/dev/null 2>&1; then
     systemctl enable "${svc}"
   else

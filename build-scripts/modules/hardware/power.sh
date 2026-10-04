@@ -20,7 +20,14 @@ packages=(
   tlp
 )
 
-dnf5 -y install "${packages[@]}"
+# tlp-pd must be excluded. It is a separate subpackage that ships the same D-Bus
+# system-service files as power-profiles-daemon
+# (/usr/share/dbus-1/system-services/net.hadess.PowerProfiles.service and
+# .../org.freedesktop.UPower.PowerProfiles.service), so installing both is an RPM
+# file conflict, not a runtime one -- masking cannot resolve it. It only mirrors
+# TLP's state over D-Bus so a desktop shell can display a power profile, and
+# provides none of the frequency or turbo control this module exists for.
+dnf5 -y install "${packages[@]}" --exclude=tlp-pd
 
 # The tlp package ships its own /etc/tlp.conf, so it has to be written AFTER the
 # install or rpm would overwrite it. That is also why it cannot live in
