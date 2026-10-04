@@ -72,6 +72,12 @@ jobs:
         run: |
           DATE=${{ steps.date.outputs.short_date }}
           TAGS="${DEFAULT_TAG} ${DEFAULT_TAG}.${DATE}"
+          # build-iso.yml installs ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest,
+          # so main must publish that tag. Gated on the ref because this workflow
+          # also builds the dev branch, which must never move :latest.
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            TAGS="$TAGS latest"
+          fi
           echo "TAGS=$TAGS" >> $GITHUB_ENV
           echo "tags=$TAGS" >> $GITHUB_OUTPUT
 
